@@ -15,6 +15,7 @@
             {% endif %}
         {% endwith %}
         <form method="POST" enctype="multipart/form-data">
+            <!-- campos de nombre, apellidos, telefono, tipo_equipo-->
             <div class="mb-3">
                 <label>Nombre</label>
                 <input type="text" name="nombre" class="form-control" required>
@@ -40,9 +41,14 @@
                     <option value="Otros">Otros</option>
                 </select>
             </div>
+            <!--Detalles del equipo-->
             <div class="mb-3">
-                <label>Marca/Modelo</label>
-                <input type="text" name="marca_modelo" class="form-control" required>
+                <label>Marca</label>
+                <input type="text" name="marca" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label>Modelo</label>
+                <input type="text" name="modelo" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label>Serie (opcional)</label>
@@ -87,12 +93,13 @@
                     <label class="form-check-label">Tóner</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" name="accesorios" value="Cable de Datos (USB)" class="form-check-input">
-                    <label class="form-check-label">Cable de Datos (USB)</label>
-                </div>
-                <div class="form-check">
                     <input type="checkbox" name="accesorios" value="Maletín" class="form-check-input">
                     <label class="form-check-label">Maletín</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="accesorios" value="Otros" class="form-check-input" id="otros_accesorios_check">
+                    <label class="form-check-label">Otros</label>
+                    <input type="text" name="otros_accesorios" class="form-control mt-2" placeholder="Especifique el accesorio" disabled>
                 </div>
             </div>
             <div class="mb-3">
@@ -100,11 +107,19 @@
                 <input type="file" name="foto_inicial" class="form-control" accept="image/jpeg,image/png" required>
             </div>
             <button type="submit" class="btn btn-success">Registrar</button>
+            <a href="{{ url_for('tecnico.login') }}" class="btn btn-custom">Salir al Login</a>
         </form>
     </div>
     <script>
         document.getElementById('otros_servicio_check').addEventListener('change', function() {
             const otrosInput = document.querySelector('input[name="otros_servicio"]');
+            otrosInput.disabled = !this.checked;
+            if (!this.checked) otrosInput.value = '';
+        });
+    </script>
+    <script>
+        document.getElementById('otros_accesorios_check').addEventListener('change', function() {
+            const otrosInput = document.querySelector('input[name="otros_accesorios"]');
             otrosInput.disabled = !this.checked;
             if (!this.checked) otrosInput.value = '';
         });

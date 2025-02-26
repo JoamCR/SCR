@@ -35,7 +35,7 @@
                     <td>
                         <a href="{{ url_for('tecnico.editar', id=servicio['id']) }}" class="btn btn-primary btn-sm">Editar</a>
                         {% if servicio['estado'] == 'Listo para entrega' %}
-                        <a href="{{ url_for('tecnico.hoja', id=servicio['id']) }}" class="btn btn-success btn-sm">Hoja</a>
+                        <a href="{{ url_for('impresion.reporte', id=servicio['id']) }}" class="btn btn-success btn-sm">Reporte</a>
                         {% endif %}
                     </td>
                 </tr>

@@ -23,9 +23,10 @@ def nuevo():
                 raise ValueError("El teléfono debe ser un número de 10 dígitos")
 
             tipo_equipo = request.form['tipo_equipo']
-            marca_modelo = request.form['marca_modelo'].strip()
-            if not marca_modelo:
-                raise ValueError("Marca/Modelo es obligatorio")
+            marca = request.form['marca'].strip()
+            modelo = request.form['modelo'].strip()
+            if not marca or not modelo:
+                raise ValueError("Marca y Modelo son obligatorios")
             if tipo_equipo not in ['Laptop', 'CPU', 'Impresora', 'Otros']:
                 raise ValueError("Tipo de equipo inválido")
 
@@ -37,6 +38,10 @@ def nuevo():
             if foto and not foto.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
                 raise ValueError("Solo se permiten imágenes JPG o PNG")
             foto_path = os.path.join(Config.UPLOAD_FOLDER, f"{datetime.now().strftime('%Y%m%d%H%M%S')}_inicial.jpg")
+            if not os.path.exists(Config.UPLOAD_FOLDER):
+                os.makedirs(Config.UPLOAD_FOLDER)
+            if not os.access(Config.UPLOAD_FOLDER, os.W_OK):
+                raise PermissionError(f"No hay permisos de escritura en {Config.UPLOAD_FOLDER}")
             foto.save(foto_path)
 
             accesorios = request.form.getlist('accesorios')
@@ -51,13 +56,17 @@ def nuevo():
             servicio_str = ', '.join(servicios) if servicios else 'Ninguno'
 
             db.execute("""
-                INSERT INTO servicios (nombre, primer_apellido, segundo_apellido, telefono, tipo_equipo, marca_modelo, servicio, accesorios, serie, fecha_registro, foto_inicial)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO servicios (nombre, primer_apellido, segundo_apellido, telefono, tipo_equipo, marca, modelo, serie, servicio, accesorios, fecha_registro, foto_inicial)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                nombre, primer_apellido, segundo_apellido, telefono, tipo_equipo, marca_modelo,
-                servicio_str, accesorios_str, serie, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), foto_path
+                nombre, primer_apellido, segundo_apellido, telefono, tipo_equipo, marca, modelo,
+                serie, servicio_str, accesorios_str, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), foto_path
             ))
             flash("Equipo registrado con éxito", "success")
+
+            return redirect(url_for('tecnico.login'))  # Redirigir al login en lugar de '/nuevo'
+
+
         except ValueError as ve:
             flash(f"Error de validación: {str(ve)}", "error")
         except Exception as e:
