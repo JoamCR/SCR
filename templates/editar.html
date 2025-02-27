@@ -25,10 +25,16 @@
             border-radius: 25px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            margin-right: 10px; /* Espaciado entre botones */
         }
         .btn-custom:hover {
             background-color: #34495e;
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Ajustar el último botón para no tener margen derecho */
+        .btn-custom:last-child {
+            margin-right: 0;
         }
         .photo-preview {
             max-width: 200px;
