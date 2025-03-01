@@ -1,4 +1,5 @@
 SCR: Sistema de Control de Reportes
+
 Es un sistema diseñado a la medida para un taller de cómputo cuyo flujo de trabajo es el siguiente:
    un usuario cualquiera puede recepcionar un equipo, solo ingresa detalles del cliente y detalles del equipo, incluso tiene un checkbox para seleccionar si se deja algun accesorio extra
    un técnico (con su usuario) ingresar y puede ver la lista de servicios en la pagina principal
