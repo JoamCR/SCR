@@ -31,10 +31,14 @@
             background-color: #34495e;
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
         }
-
-        /* Ajustar el último botón para no tener margen derecho */
         .btn-custom:last-child {
-            margin-right: 0;
+            margin-right: 0; /* Quita el margen del último botón */
+        }
+        .form-control {
+            max-width: 400px; /* Límite máximo de ancho para los campos */
+            width: 100%; /* Ocupa todo el contenedor, pero no más de 400px */
+            display: block; /* Asegura que se comporten como bloques */
+            margin-bottom: 10px; /* Espaciado inferior para mejor visualización */
         }
         .photo-preview {
             max-width: 200px;
@@ -88,6 +92,7 @@
                     <img src="/{{ servicio['foto_inicial'] }}" alt="Foto Inicial" class="photo-preview">
                 {% else %}
                     <p class="photo-indicator">Imagen cargada: No</p>
+                    <input type="file" name="foto_inicial" class="form-control" accept="image/jpeg,image/png">
                 {% endif %}
             </div>
             <div class="mb-3">

@@ -8,12 +8,6 @@
         body {
             font-family: 'Roboto', sans-serif;
         }
-        .form-control {
-            max-width: 400px; /* Límite máximo de ancho para los campos */
-            width: 100%; /* Ocupa todo el contenedor, pero no más de 400px */
-            display: block; /* Asegura que se comporten como bloques */
-            margin-bottom: 10px; /* Espaciado inferior para mejor visualización */
-        }
         .reporte-preview {
             border: 1px solid #ccc;
             padding: 20px;
@@ -46,10 +40,20 @@
             border-radius: 25px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            margin-right: 10px; /* Espaciado entre botones */
         }
         .btn-custom:hover {
             background-color: #34495e;
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-custom:last-child {
+            margin-right: 0; /* Quita el margen del último botón */
+        }
+        .form-control {
+            max-width: 400px; /* Límite máximo de ancho para los campos */
+            width: 100%; /* Ocupa todo el contenedor, pero no más de 400px */
+            display: block; /* Asegura que se comporten como bloques */
+            margin-bottom: 10px; /* Espaciado inferior para mejor visualización */
         }
         .table-custom {
             width: 100%;
@@ -102,7 +106,7 @@
             <h3>{{ membrete.nombre }}</h3>
             <p>{{ membrete.direccion }}</p>
             <p>{{ membrete.telefono }}</p>
-            <p class="text-end">Fecha: {{ servicio['fecha_entrega'] or datetime.now().strftime('%Y-%m-%d') }}</p>
+            <p class="text-end">Fecha: {{ servicio['fecha_entrega'] or datetime.now().strftime('%d/%m/%Y') }}</p>
             <hr>
             <h4>Datos del Cliente</h4>
             <p>Nombre: {{ servicio['nombre'] }} {{ servicio['primer_apellido'] }} {{ servicio['segundo_apellido'] }}</p>
@@ -138,7 +142,7 @@
                 <img src="/{{ servicio['foto_inicial'] }}" alt="Foto Inicial">
                 {% endif %}
                 {% if servicio['foto_servicio'] %}
-                <img src="/{{ servicio['foto_servicio'] }}" alt="Foto Servicio">
+                <img src="/{{ servicio['foto_servicio'] }}" alt="Foto Durante Servicio">
                 {% endif %}
                 {% if servicio['foto_final'] %}
                 <img src="/{{ servicio['foto_final'] }}" alt="Foto Final">

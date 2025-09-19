@@ -306,7 +306,7 @@ def reporte(id):
             # Usuario (derecha)
             c.line(margen_derecho - 150, y, margen_derecho, y)
             c.drawString(margen_derecho - 100, y - 15, "Usuario")
-            c.drawString(margen_derecho - 100, y - 30, f"{servicio['nombre']} {servicio['primer_apellido']} {servicio['segundo_apellido']}")
+            c.drawString(margen_derecho - 90, y - 30, f"{servicio['nombre']} {servicio['primer_apellido']} {servicio['segundo_apellido']}")
             c.save()
             print(f"PDF generado en: {pdf_path}")
 
