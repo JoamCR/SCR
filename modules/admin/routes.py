@@ -30,7 +30,7 @@ def usuarios():
             if rol not in ['Técnico', 'Administrador']:
                 raise ValueError("Rol inválido")
             
-            contraseña_hash = bcrypt.hashpw(contraseña, bcrypt.gensalt()).decode('utf-8')
+            contraseña_hash = bcrypt.hashpw(contraseña, bcrypt.gensalt())
             db.execute("INSERT INTO usuarios (nombre, usuario, contraseña, rol) VALUES (?, ?, ?, ?)",
                        (nombre, usuario, contraseña_hash, rol))
             flash("Usuario creado con éxito", "success")
@@ -42,3 +42,16 @@ def usuarios():
     
     usuarios = db.query("SELECT * FROM usuarios")
     return render_template('usuarios.html', usuarios=usuarios)
+
+@admin_bp.route('/desactivar/<int:id>', methods=['POST'])
+@login_required
+def desactivar(id):
+    if current_user.rol != 'Administrador':
+        flash("Acceso denegado", "error")
+        return redirect(url_for('tecnico.panel'))
+    try:
+        db.execute("UPDATE usuarios SET activo = 0 WHERE id = ?", (id,))
+        flash("Usuario desactivado con éxito", "success")
+    except Exception as e:
+        flash(f"Error al desactivar usuario: {str(e)}", "error")
+    return redirect(url_for('admin.usuarios'))

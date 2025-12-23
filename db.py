@@ -8,14 +8,13 @@ class DatabaseSingleton:
             cls._instance = super().__new__(cls)
             cls._instance.conn = sqlite3.connect(Config.DATABASE_PATH, check_same_thread=False)
             cls._instance.conn.row_factory = sqlite3.Row
-            cls._instance.cursor = cls._instance.conn.cursor()
             cls._instance.init_db()
         return cls._instance
     
     def init_db(self):
         try:
-            # Crear tablas solo si no existen
-            self.cursor.executescript('''
+            cursor = self.conn.cursor()
+            cursor.executescript('''
                 CREATE TABLE IF NOT EXISTS servicios (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     nombre TEXT NOT NULL,
@@ -57,19 +56,27 @@ class DatabaseSingleton:
                     activo INTEGER DEFAULT 1 CHECK (activo IN (0, 1))
                 );
             ''')
+            # Crear índices para optimizar consultas
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_servicio ON servicios(servicio)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_notas ON servicios(notas)')
             self.conn.commit()
         except sqlite3.Error as e:
             print(f"Error al inicializar la base de datos: {str(e)}")
             raise
 
     def query(self, sql, params=()):
-        self.cursor.execute(sql, params)
-        return self.cursor.fetchall()
+        cursor = self.conn.cursor()
+        cursor.execute(sql, params)
+        result = cursor.fetchall()
+        cursor.close()
+        return result
 
     def execute(self, sql, params=()):
         try:
-            self.cursor.execute(sql, params)
+            cursor = self.conn.cursor()
+            cursor.execute(sql, params)
             self.conn.commit()
+            cursor.close()
         except sqlite3.Error as e:
             print(f"Error al ejecutar SQL: {str(e)}")
             raise

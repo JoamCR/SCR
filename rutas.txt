@@ -1,2 +1,8 @@
 http://127.0.0.1:5000/tecnico/login
 http://127.0.0.1:5000/nuevo
+
+
+
+
+
+esta con botón cancelar que redirige a la ultima pagina anterior

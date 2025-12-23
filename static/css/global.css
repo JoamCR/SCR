@@ -1,0 +1,168 @@
+/* Botón de acción para panel (Retomar y Reporte) - corto y alineado */
+.btn-accion-panel {
+  border-radius: 30px;
+  min-width: 80px;
+  padding: 6px 18px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-block;
+  text-align: center;
+  margin: 0 4px;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.08);
+  border: none;
+  transition: background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+/* Retomar: amarillo pastel */
+.btn-retomar {
+  background: #ffe999;
+  color: #7a6f1e;
+}
+.btn-retomar:hover, .btn-retomar:focus {
+  background: #ffd347;
+  color: #7a6f1e;
+}
+
+
+/* Botón azul claro para indicar final del servicio */
+.btn-reporte-final {
+  background-color: #5bc0ff;
+  color: #fff;
+  border-radius: 30px;
+  padding: 8px 32px;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.btn-reporte-final:hover {
+  background-color: #3bb0e0;
+  filter: brightness(0.95);
+}
+/* Botón de inicio alineado arriba a la derecha */
+.inicio-top-right {
+  margin-top: -16px;
+}
+/* Filtros ultra compactos para panel técnico */
+.panel-filtros-grid {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.panel-filtros-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+/* Ajuste de tamaño para filtros más cómodos */
+.panel-filtros-input-sm {
+  width: 140px;
+}
+.panel-filtros-input-id {
+  width: 90px;
+}
+.panel-filtros-input-wide {
+  width: 160px;
+}
+.panel-filtros-btns {
+  display: flex;
+  gap: 4px;
+}
+.panel-filtros-btn-small {
+  padding: 4px 16px;
+  font-size: 0.95em;
+  min-width: 70px;
+}
+/* Filtros compactos para panel técnico */
+.panel-filtros-form {
+  font-size: 0.95rem;
+}
+.panel-filtros-label {
+  font-size: 0.95em;
+  margin-bottom: 0.25em;
+}
+.panel-filtros-btn {
+  font-size: 0.95em;
+}
+/* Espaciado entre botones principales del formulario */
+.gap-btns {
+  gap: 24px;
+}
+
+/* global.css: estilos para todos los botones y elementos comunes */
+
+/* Botones ovalados y colores pastel diferenciados */
+.btn-global, .btn-aceptar, .btn-cancelar, .btn-regresar, .btn-panel, .btn-panel-alt, .btn-accion-panel, .btn-retomar, .btn-reporte-final, .btn-form-main {
+  border-radius: 30px;
+  min-width: 80px;
+  padding: 6px 18px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-block;
+  text-align: center;
+  margin: 0 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border: none;
+  transition: background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  vertical-align: middle;
+   /* LÍNEA QUE DEBES AÑADIR */
+  text-decoration: none; 
+  
+}
+
+/* Botón aceptar (verde pastel) */
+.btn-aceptar {
+  background: #b2f2bb;
+  color: #155724;
+}
+.btn-aceptar:hover, .btn-aceptar:focus {
+  background: #8fd19e;
+  color: #155724;
+}
+
+/* Botón cancelar (rojo pastel) */
+.btn-cancelar {
+  background: #ffb3b3;
+  color: #721c24;
+}
+.btn-cancelar:hover, .btn-cancelar:focus {
+  background: #ff8c8c;
+  color: #721c24;
+}
+
+/* Botón regresar (azul pastel) */
+.btn-regresar {
+  background: #b3d1ff;
+  color: #1b2a4b;
+}
+.btn-regresar:hover, .btn-regresar:focus {
+  background: #8cb3e6;
+  color: #1b2a4b;
+}
+
+/* Botón panel (colores pastel distintos) */
+.btn-panel {
+  background: #ffe0b3;
+  color: #7a5c1e;
+}
+.btn-panel:hover, .btn-panel:focus {
+  background: #ffd699;
+  color: #7a5c1e;
+}
+
+/* Botón para acciones secundarias (ejemplo: amarillo pastel) */
+.btn-panel-alt {
+  background: #fff3b3;
+  color: #7a6f1e;
+}
+.btn-panel-alt:hover, .btn-panel-alt:focus {
+  background: #ffe999;
+  color: #7a6f1e;
+}
+
+/* Puedes agregar más estilos globales aquí */

@@ -33,16 +33,15 @@ def nuevo():
             serie = request.form.get('serie', '').strip()
             
             foto = request.files['foto_inicial']
-            if not foto:
-                raise ValueError("La foto inicial es obligatoria")
-            if foto and not foto.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
-                raise ValueError("Solo se permiten imágenes JPG o PNG")
-            foto_path = os.path.join(Config.UPLOAD_FOLDER, f"{datetime.now().strftime('%Y%m%d%H%M%S')}_inicial.jpg")
-            if not os.path.exists(Config.UPLOAD_FOLDER):
-                os.makedirs(Config.UPLOAD_FOLDER)
-            if not os.access(Config.UPLOAD_FOLDER, os.W_OK):
-                raise PermissionError(f"No hay permisos de escritura en {Config.UPLOAD_FOLDER}")
-            foto.save(foto_path)
+            foto_path = None
+            if foto and foto.filename:
+                if not foto.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+                    raise ValueError("Solo se permiten imágenes JPG o PNG")
+                if not os.path.exists(Config.UPLOAD_FOLDER):
+                    os.makedirs(Config.UPLOAD_FOLDER)
+                nombre_archivo = f"{nombre}_{datetime.now().strftime('%Y%m%d%H%M%S')}_inicial.jpg"
+                foto.save(os.path.join(Config.UPLOAD_FOLDER, nombre_archivo))
+                foto_path = nombre_archivo
 
             accesorios = request.form.getlist('accesorios')
             accesorios_str = ', '.join(accesorios) if accesorios else 'Ninguno'
@@ -64,7 +63,7 @@ def nuevo():
             ))
             flash("Equipo registrado con éxito", "success")
 
-            return redirect(url_for('tecnico.login'))  # Redirigir al login en lugar de '/nuevo'
+            return redirect(url_for('public.nuevo'))  # Redirigir al login en lugar de '/nuevo'
 
 
         except ValueError as ve:
@@ -72,4 +71,4 @@ def nuevo():
         except Exception as e:
             flash(f"Error al registrar: {str(e)}", "error")
         return redirect(url_for('public.nuevo'))
-    return render_template('nuevo.html')
+    return render_template('nuevo.html', datetime=datetime)

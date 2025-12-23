@@ -3,10 +3,15 @@
 <head>
     <title>Reportes</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/global.css">
 </head>
 <body>
     <div class="container mt-4">
-        <h1>Reportes</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="mb-0">Reportes</h1>
+            <a href="{{ url_for('index') }}" class="btn-regresar btn-form-main inicio-top-right ms-3" title="Inicio">Inicio</a>
+        </div>
+        <h2>Servicios Realizados</h2>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -23,7 +28,24 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{{ url_for('tecnico.panel') }}" class="btn btn-secondary">Volver</a>
+        <h2>Notas Comunes</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nota</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nota in notas %}
+                <tr>
+                    <td>{{ nota['notas'] }}</td>
+                    <td>{{ nota['count'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <!-- Botón Inicio movido al header -->
     </div>
 </body>
 </html>

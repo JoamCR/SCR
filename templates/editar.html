@@ -3,56 +3,18 @@
 <head>
     <title>Editar Servicio</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/global.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .btn-custom {
-            background-color: #2c3e50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            margin-right: 10px; /* Espaciado entre botones */
-        }
-        .btn-custom:hover {
-            background-color: #34495e;
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
-        }
-        .btn-custom:last-child {
-            margin-right: 0; /* Quita el margen del último botón */
-        }
-        .form-control {
-            max-width: 400px; /* Límite máximo de ancho para los campos */
-            width: 100%; /* Ocupa todo el contenedor, pero no más de 400px */
-            display: block; /* Asegura que se comporten como bloques */
-            margin-bottom: 10px; /* Espaciado inferior para mejor visualización */
-        }
-        .photo-preview {
-            max-width: 200px;
-            margin: 10px 0;
-        }
-        .photo-indicator {
-            color: #2c3e50;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/estilos.css">
 </head>
 <body>
     <div class="form-container">
-        <h1>Editar Servicio #{{ servicio['id'] }}</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="mb-0">Editar Servicio #{{ servicio['id'] }}</h1>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('index') }}" class="btn-regresar btn-form-main inicio-top-right ms-3" title="Inicio">Inicio</a>
+            </div>
+        </div>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -62,8 +24,8 @@
         {% endwith %}
         <form method="POST" enctype="multipart/form-data">
             <div class="mb-3">
-                <label>Estado</label>
-                <select name="estado" class="form-control" required>
+                <label for="estado">Estado</label>
+                <select name="estado" id="estado" class="form-control" required title="Estado del servicio">
                     <option value="En diagnóstico" {% if servicio['estado'] == 'En diagnóstico' %}selected{% endif %}>En diagnóstico</option>
                     <option value="En reparación" {% if servicio['estado'] == 'En reparación' %}selected{% endif %}>En reparación</option>
                     <option value="Listo para entrega" {% if servicio['estado'] == 'Listo para entrega' %}selected{% endif %}>Listo para entrega</option>
@@ -71,53 +33,80 @@
             </div>
             <div class="mb-3">
                 <label>Servicio Solicitado</label>
-                <p class="form-control-static">{{ servicio['servicio'] }}</p>
+                <div class="form-check">
+                    <input type="checkbox" name="servicio" value="Mantenimiento Preventivo" id="servicio_preventivo" class="form-check-input" {% if 'Mantenimiento Preventivo' in servicio['servicio'] %}checked{% endif %} title="Solicitar mantenimiento preventivo">
+                    <label for="servicio_preventivo" class="form-check-label">Mantenimiento Preventivo</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="servicio" value="Mantenimiento Correctivo" id="servicio_correctivo" class="form-check-input" {% if 'Mantenimiento Correctivo' in servicio['servicio'] %}checked{% endif %} title="Solicitar mantenimiento correctivo">
+                    <label for="servicio_correctivo" class="form-check-label">Mantenimiento Correctivo</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="servicio" value="Diagnóstico" id="servicio_diagnostico" class="form-check-input" {% if 'Diagnóstico' in servicio['servicio'] %}checked{% endif %} title="Solicitar diagnóstico">
+                    <label for="servicio_diagnostico" class="form-check-label">Diagnóstico</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="servicio" value="Otros" id="otros_servicio_check" class="form-check-input" {% if 'Otros' in servicio['servicio'] %}checked{% endif %} title="Solicitar otro servicio">
+                    <label for="otros_servicio_check" class="form-check-label">Otros</label>
+                    <input type="text" name="otros_servicio" class="form-control mt-2" placeholder="Especifique el servicio" title="Describa el servicio solicitado" value="{% if 'Otros' in servicio['servicio'] %}{{ servicio['servicio'].split('Otros: ')[1] if 'Otros: ' in servicio['servicio'] else '' }}{% endif %}" {% if 'Otros' not in servicio['servicio'] %}disabled{% endif %}>
+                </div>
             </div>
             <div class="mb-3">
-                <label>Marca</label>
-                <input type="text" name="marca" class="form-control" value="{{ servicio['marca'] }}" required>
+                <label for="marca">Marca</label>
+                <input type="text" name="marca" id="marca" class="form-control" value="{{ servicio['marca'] }}" required title="Marca del equipo" placeholder="Ejemplo: HP">
             </div>
             <div class="mb-3">
-                <label>Modelo</label>
-                <input type="text" name="modelo" class="form-control" value="{{ servicio['modelo'] }}" required>
+                <label for="modelo">Modelo</label>
+                <input type="text" name="modelo" id="modelo" class="form-control" value="{{ servicio['modelo'] }}" required title="Modelo del equipo" placeholder="Ejemplo: EliteBook 840">
             </div>
             <div class="mb-3">
-                <label>Notas</label>
-                <textarea name="notas" class="form-control" rows="5">{{ servicio['notas'] or '' }}</textarea>
+                <label for="notas">Notas</label>
+                <textarea name="notas" id="notas" class="form-control" rows="5" title="Notas adicionales" placeholder="Agregue observaciones aquí">{{ servicio['notas'] or '' }}</textarea>
             </div>
             <div class="mb-3">
-                <label>Foto Inicial</label>
+                <label for="foto_inicial">Foto Inicial</label>
                 {% if servicio['foto_inicial'] %}
                     <p class="photo-indicator">Imagen cargada: Sí</p>
                     <img src="/{{ servicio['foto_inicial'] }}" alt="Foto Inicial" class="photo-preview">
                 {% else %}
                     <p class="photo-indicator">Imagen cargada: No</p>
-                    <input type="file" name="foto_inicial" class="form-control" accept="image/jpeg,image/png">
+                    <input type="file" name="foto_inicial" id="foto_inicial" class="form-control" accept="image/jpeg,image/png" title="Suba la foto inicial">
                 {% endif %}
             </div>
             <div class="mb-3">
-                <label>Foto Durante Servicio</label>
+                <label for="foto_servicio">Foto Durante Servicio</label>
                 {% if servicio['foto_servicio'] %}
                     <p class="photo-indicator">Imagen cargada: Sí</p>
                     <img src="/{{ servicio['foto_servicio'] }}" alt="Foto Durante Servicio" class="photo-preview">
                 {% else %}
                     <p class="photo-indicator">Imagen cargada: No</p>
-                    <input type="file" name="foto_servicio" class="form-control" accept="image/jpeg,image/png">
+                    <input type="file" name="foto_servicio" id="foto_servicio" class="form-control" accept="image/jpeg,image/png" title="Suba la foto durante el servicio">
                 {% endif %}
             </div>
             <div class="mb-3">
-                <label>Foto Final</label>
+                <label for="foto_final">Foto Final</label>
                 {% if servicio['foto_final'] %}
                     <p class="photo-indicator">Imagen cargada: Sí</p>
                     <img src="/{{ servicio['foto_final'] }}" alt="Foto Final" class="photo-preview">
                 {% else %}
                     <p class="photo-indicator">Imagen cargada: No</p>
-                    <input type="file" name="foto_final" class="form-control" accept="image/jpeg,image/png">
+                    <input type="file" name="foto_final" id="foto_final" class="form-control" accept="image/jpeg,image/png" title="Suba la foto final">
                 {% endif %}
             </div>
-            <button type="submit" class="btn btn-custom">Actualizar</button>
-            <a href="{{ url_for('tecnico.panel') }}" class="btn btn-custom">Volver</a>
+            <div class="d-flex justify-content-center gap-btns">
+                <button type="submit" class="btn-aceptar btn-form-main" title="Actualizar">Actualizar</button>
+                <a href="{{ url_for('tecnico.panel') }}" class="btn-regresar btn-form-main" title="Regresar al Panel Técnico">Regresar</a>
+            </div>
         </form>
+        <!-- Botón Inicio movido al header -->
+            
     </div>
+    <script>
+        document.getElementById('otros_servicio_check').addEventListener('change', function() {
+            const otrosInput = document.querySelector('input[name="otros_servicio"]');
+            otrosInput.disabled = !this.checked;
+            if (!this.checked) otrosInput.value = '';
+        });
+    </script>
 </body>
 </html>
