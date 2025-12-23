@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+
+# Database files
+*.db
+*.sqlite3
+
+# Flask session files
+flask_session/
+
+# Uploaded files
+static/uploads/
