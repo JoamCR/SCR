@@ -164,13 +164,21 @@ def editar(id):
         return redirect(url_for('tecnico.panel'))
     servicio = servicio[0]
 
+    # Migración perezosa: Si hay una nota antigua y no hay notas en la nueva tabla, la movemos
+    notas_existentes = db.query("SELECT COUNT(*) as count FROM notas_servicio WHERE servicio_id = ?", (id,))
+    if notas_existentes[0]['count'] == 0 and servicio['notas']:
+        db.execute("INSERT INTO notas_servicio (servicio_id, nota, fecha, usuario) VALUES (?, ?, ?, ?)",
+                   (id, servicio['notas'], servicio['fecha_registro'], servicio['tecnico_actual'] or 'Sistema'))
+
     if request.method == 'POST':
         try:
             estado = request.form['estado']
             if estado not in ['En diagnóstico', 'En reparación', 'Listo para entrega']:
                 raise ValueError("Estado inválido")
             
-            notas = request.form['notas'].strip()
+            nueva_nota = request.form.get('nueva_nota', '').strip()
+            notas = servicio['notas'] or '' # Mantener la nota actual por defecto
+
             marca = request.form['marca'].strip()
             modelo = request.form['modelo'].strip()
             if not marca or not modelo:
@@ -211,6 +219,11 @@ def editar(id):
                 foto_final.save(os.path.join(Config.UPLOAD_FOLDER, nombre_archivo_final))
                 foto_final_path = os.path.join('static/uploads', nombre_archivo_final).replace('\\', '/')
 
+            if nueva_nota:
+                notas = nueva_nota # Actualizamos el campo principal con la nota más reciente
+                db.execute("INSERT INTO notas_servicio (servicio_id, nota, fecha, usuario) VALUES (?, ?, ?, ?)",
+                           (id, nueva_nota, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), current_user.nombre))
+
             db.execute("""
                 UPDATE servicios SET estado = ?, marca = ?, modelo = ?, servicio = ?, notas = ?, foto_servicio = ?, foto_final = ?, 
                 fecha_entrega = ?, tecnico_actual = ? WHERE id = ?
@@ -230,7 +243,55 @@ def editar(id):
         except Exception as e:
             flash(f"Error al actualizar: {str(e)}", "error")
         return redirect(url_for('tecnico.editar', id=id)) # Redirigir a la misma página en caso de error
-    return render_template('editar.html', servicio=servicio)
+
+    # Obtener historial de cambios para mostrar en la vista
+    historial_db = db.query("SELECT * FROM historial WHERE servicio_id = ? ORDER BY fecha_cambio DESC", (id,))
+    historial = []
+    if historial_db:
+        for h in historial_db:
+            historial.append({
+                'id': h['id'],
+                'fecha': h['fecha_cambio'],
+                'usuario': h['tecnico'],
+                'descripcion': f"Estado: {h['estado']} - Notas: {h['notas']}"
+            })
+
+    # Obtener lista de notas individuales
+    notas_list = db.query("SELECT * FROM notas_servicio WHERE servicio_id = ? ORDER BY fecha DESC", (id,))
+
+    return render_template('editar.html', servicio=servicio, historial=historial, notas_list=notas_list)
+
+@tecnico_bp.route('/eliminar_nota/<int:id_nota>', methods=['POST'])
+@login_required
+def eliminar_nota(id_nota):
+    try:
+        nota = db.query("SELECT servicio_id FROM notas_servicio WHERE id = ?", (id_nota,))
+        if nota:
+            servicio_id = nota[0]['servicio_id']
+            db.execute("DELETE FROM notas_servicio WHERE id = ?", (id_nota,))
+            flash("Nota eliminada correctamente", "success")
+            return redirect(url_for('tecnico.editar', id=servicio_id))
+        else:
+            flash("Nota no encontrada", "error")
+    except Exception as e:
+        flash(f"Error al eliminar nota: {str(e)}", "error")
+    return redirect(url_for('tecnico.panel'))
+
+@tecnico_bp.route('/eliminar_historial/<int:id_historial>', methods=['POST'])
+@login_required
+def eliminar_historial(id_historial):
+    try:
+        historial_entry = db.query("SELECT servicio_id FROM historial WHERE id = ?", (id_historial,))
+        if historial_entry:
+            servicio_id = historial_entry[0]['servicio_id']
+            db.execute("DELETE FROM historial WHERE id = ?", (id_historial,))
+            flash("Registro del historial eliminado correctamente", "success")
+            return redirect(url_for('tecnico.editar', id=servicio_id))
+        else:
+            flash("Registro no encontrado", "error")
+    except Exception as e:
+        flash(f"Error al eliminar del historial: {str(e)}", "error")
+    return redirect(url_for('tecnico.panel'))
 
 @tecnico_bp.route('/eliminar_servicio/<int:id>', methods=['POST'])
 @login_required

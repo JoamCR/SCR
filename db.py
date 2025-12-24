@@ -47,6 +47,15 @@ class DatabaseSingleton:
                     FOREIGN KEY (servicio_id) REFERENCES servicios(id)
                 );
 
+                CREATE TABLE IF NOT EXISTS notas_servicio (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    servicio_id INTEGER,
+                    nota TEXT,
+                    fecha TEXT,
+                    usuario TEXT,
+                    FOREIGN KEY (servicio_id) REFERENCES servicios(id)
+                );
+
                 CREATE TABLE IF NOT EXISTS usuarios (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     nombre TEXT NOT NULL,

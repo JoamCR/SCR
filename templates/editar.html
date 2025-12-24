@@ -8,13 +8,16 @@
     <link rel="stylesheet" href="/static/css/estilos.css">
 </head>
 <body>
-    <div class="form-container">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1 class="mb-0">Editar Servicio #{{ servicio['id'] }}</h1>
-            <div class="d-flex gap-2">
-                <a href="{{ url_for('index') }}" class="btn-regresar btn-form-main inicio-top-right ms-3" title="Inicio">Inicio</a>
-            </div>
-        </div>
+    <div class="container-fluid p-4">
+        <div class="row">
+            <!-- Columna Izquierda: Formulario -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-white">
+                        <h4 class="mb-0">Editar Servicio #{{ servicio['id'] }}</h4>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm" title="Inicio">Inicio</a>
+                    </div>
+                    <div class="card-body">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -23,6 +26,8 @@
             {% endif %}
         {% endwith %}
         <form method="POST" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6">
             <div class="mb-3">
                 <label for="estado">Estado</label>
                 <select name="estado" id="estado" class="form-control" required title="Estado del servicio">
@@ -51,6 +56,8 @@
                     <input type="text" name="otros_servicio" class="form-control mt-2" placeholder="Especifique el servicio" title="Describa el servicio solicitado" value="{% if 'Otros' in servicio['servicio'] %}{{ servicio['servicio'].split('Otros: ')[1] if 'Otros: ' in servicio['servicio'] else '' }}{% endif %}" {% if 'Otros' not in servicio['servicio'] %}disabled{% endif %}>
                 </div>
             </div>
+                </div>
+                <div class="col-md-6">
             <div class="mb-3">
                 <label for="marca">Marca</label>
                 <input type="text" name="marca" id="marca" class="form-control" value="{{ servicio['marca'] }}" required title="Marca del equipo" placeholder="Ejemplo: HP">
@@ -61,8 +68,29 @@
             </div>
             <div class="mb-3">
                 <label for="notas">Notas</label>
-                <textarea name="notas" id="notas" class="form-control" rows="5" title="Notas adicionales" placeholder="Agregue observaciones aquí">{{ servicio['notas'] or '' }}</textarea>
+                <div class="bg-light p-3 rounded mb-2 border" style="max-height: 200px; overflow-y: auto;">
+                    {% if notas_list %}
+                        {% for nota in notas_list %}
+                        <div class="card mb-2 shadow-sm">
+                            <div class="card-body p-2">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <small class="text-muted fw-bold">{{ nota['fecha'] }} - {{ nota['usuario'] }}</small>
+                                    <button type="submit" form="form-eliminar-nota-{{ nota['id'] }}" class="btn-close btn-sm" aria-label="Eliminar" title="Eliminar nota"></button>
+                                </div>
+                                <p class="mb-0 mt-1 text-dark">{{ nota['nota'] }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted small mb-0 text-center">No hay notas registradas.</p>
+                    {% endif %}
+                </div>
+                <textarea name="nueva_nota" id="nueva_nota" class="form-control" rows="3" title="Agregar nueva nota" placeholder="Escriba una nueva nota aquí para agregarla al historial..."></textarea>
             </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
             <div class="mb-3">
                 <label for="foto_inicial">Foto Inicial</label>
                 {% if servicio['foto_inicial'] %}
@@ -73,6 +101,8 @@
                     <input type="file" name="foto_inicial" id="foto_inicial" class="form-control" accept="image/jpeg,image/png" title="Suba la foto inicial">
                 {% endif %}
             </div>
+                </div>
+                <div class="col-md-4">
             <div class="mb-3">
                 <label for="foto_servicio">Foto Durante Servicio</label>
                 {% if servicio['foto_servicio'] %}
@@ -83,6 +113,8 @@
                     <input type="file" name="foto_servicio" id="foto_servicio" class="form-control" accept="image/jpeg,image/png" title="Suba la foto durante el servicio">
                 {% endif %}
             </div>
+                </div>
+                <div class="col-md-4">
             <div class="mb-3">
                 <label for="foto_final">Foto Final</label>
                 {% if servicio['foto_final'] %}
@@ -93,13 +125,64 @@
                     <input type="file" name="foto_final" id="foto_final" class="form-control" accept="image/jpeg,image/png" title="Suba la foto final">
                 {% endif %}
             </div>
-            <div class="d-flex justify-content-center gap-btns">
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-3">
                 <button type="submit" class="btn-aceptar btn-form-main" title="Actualizar">Actualizar</button>
                 <a href="{{ url_for('tecnico.panel') }}" class="btn-regresar btn-form-main" title="Regresar al Panel Técnico">Regresar</a>
             </div>
         </form>
-        <!-- Botón Inicio movido al header -->
-            
+        
+        <!-- Formularios ocultos para eliminar notas -->
+        {% for nota in notas_list %}
+        <form id="form-eliminar-nota-{{ nota['id'] }}" action="{{ url_for('tecnico.eliminar_nota', id_nota=nota['id']) }}" method="POST" onsubmit="return confirm('¿Está seguro de eliminar esta nota?');" style="display: none;"></form>
+        {% endfor %}
+        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Historial -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Historial de Cambios</h5>
+                    </div>
+                    <div class="card-body p-0 table-responsive" style="max-height: 85vh;">
+                        <table class="table table-striped table-hover mb-0" style="font-size: 0.85rem;">
+                            <thead class="table-light sticky-top">
+                        <tr>
+                            <th>Fecha y Hora</th>
+                            <th>Usuario</th>
+                            <th>Cambios Realizados</th>
+                            <th style="width: 40px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if historial %}
+                            {% for cambio in historial %}
+                            <tr>
+                                <td style="white-space: nowrap;">{{ cambio['fecha'] }}</td>
+                                <td>{{ cambio['usuario'] }}</td>
+                                <td>{{ cambio['descripcion'] }}</td>
+                                <td class="text-end">
+                                    <form action="{{ url_for('tecnico.eliminar_historial', id_historial=cambio['id']) }}" method="POST" onsubmit="return confirm('¿Está seguro de eliminar este registro del historial?');">
+                                        <button type="submit" class="btn-close btn-sm" aria-label="Eliminar" title="Eliminar registro"></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">No hay historial disponible.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+        </div>
     </div>
     <script>
         document.getElementById('otros_servicio_check').addEventListener('change', function() {
