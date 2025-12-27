@@ -26,6 +26,7 @@ class DatabaseSingleton:
                     modelo TEXT NOT NULL,
                     serie TEXT,
                     servicio TEXT,
+                    trabajo_realizado TEXT,
                     accesorios TEXT,
                     estado TEXT DEFAULT 'En diagnóstico',
                     notas TEXT,
