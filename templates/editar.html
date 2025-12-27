@@ -56,6 +56,10 @@
                     <input type="text" name="otros_servicio" class="form-control mt-2" placeholder="Especifique el servicio" title="Describa el servicio solicitado" value="{% if 'Otros' in servicio['servicio'] %}{{ servicio['servicio'].split('Otros: ')[1] if 'Otros: ' in servicio['servicio'] else '' }}{% endif %}" {% if 'Otros' not in servicio['servicio'] %}disabled{% endif %}>
                 </div>
             </div>
+            <div class="mb-3">
+                <label for="trabajo_realizado">Servicio Realizado</label>
+                <textarea name="trabajo_realizado" id="trabajo_realizado" class="form-control" rows="4" title="Describa el trabajo técnico realizado" placeholder="Detalle aquí las reparaciones efectuadas...">{{ servicio['trabajo_realizado'] or '' }}</textarea>
+            </div>
                 </div>
                 <div class="col-md-6">
             <div class="mb-3">
@@ -68,6 +72,7 @@
             </div>
             <div class="mb-3">
                 <label for="notas">Notas</label>
+                <label for="notas">Fallas y Observaciones</label>
                 <div class="bg-light p-3 rounded mb-2 border" style="max-height: 200px; overflow-y: auto;">
                     {% if notas_list %}
                         {% for nota in notas_list %}
